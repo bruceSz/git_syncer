@@ -1,0 +1,44 @@
+import ConfigParser
+
+CONF = None
+
+config_name="gsyncer.conf"
+
+def _init():
+    global CONF
+    if CONF:
+        return CONF
+    else:
+        CONF = _do_init()
+        return CONF
+
+
+
+def _do_init():
+
+    class Conf:
+        pass
+    
+    conf = Conf()
+
+    cf=ConfigParser.ConfigParser()
+    cf.read("gsyncer.conf")
+    ops = cf.options("default")
+    for op in ops:
+        conf.__dict__[op] = cf.get("default",op)
+    return conf
+
+
+def test_config_parser():
+    cf = ConfigParser.ConfigParser()
+    cf.read("gsyncer.conf")
+
+    ops = cf.options("default")
+    for op in ops:
+        print op,cf.get("default",op)
+
+
+CONF = _init()
+
+    
+    
