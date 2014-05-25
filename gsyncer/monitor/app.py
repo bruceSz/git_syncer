@@ -2,14 +2,14 @@ import re
 from wsgiref.simple_server import make_server
 
 
-#def hello_world_app(environ,start_response):
-#    status = '200 OK'
-#    headers = [('Content-type','text/plain')]
-#    print environ
-#
-#    start_response(status,headers)
-#
-#    return ["hello world"]
+def hello_world_app(environ,start_response):
+    status = '200 OK'
+    headers = [('Content-type','text/plain')]
+    print environ
+
+    start_response(status,headers)
+
+    return ["hello world"]
 
 
 def event_analyst(environ,start_response):
@@ -37,10 +37,11 @@ def not_found(environ,start_response):
     start_response('404 NOT FOUND',[('Content-type','text/plain')])
     return ['Not Found']
 
-urls = [
-    (r'^$',hello_world_app),
-    (r'push_event$',event_analyst)
-]
+print hello_world_app
+#urls = [
+#    (r'^$',hello_world_app),
+#    (r'push_event$',event_analyst)
+#]
 
 
 def monitor(environ,start_response):
