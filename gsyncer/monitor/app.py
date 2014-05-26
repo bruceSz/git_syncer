@@ -1,6 +1,25 @@
 import re
 from wsgiref.simple_server import make_server
 
+class Monitor(object):
+    def __init__(self,mapper):
+        self.mapper = mapper
+    
+    def __call__(self,environ,start_response):
+        status = '200 OK'
+        headers = [('Content-type','text/plain')]
+        path = environ.get('PATH_INFO','').lstrip('/')
+        print path
+        for regex,callback in self.mapper:
+            match = re.search(regex,path)
+            if match is not None:
+                return callback(environ,start_response)
+
+        return not_found(environ,start_response)
+
+
+
+
 
 def hello_world_app(environ,start_response):
     status = '200 OK'
@@ -27,6 +46,7 @@ def event_analyst(environ,start_response):
             request_body_size = 0
 
         request_body = environ['wsgi.input'].read(request_body_size) 
+        
         print request_body
         return [str(request_body)]
     
@@ -37,11 +57,10 @@ def not_found(environ,start_response):
     start_response('404 NOT FOUND',[('Content-type','text/plain')])
     return ['Not Found']
 
-print hello_world_app
-#urls = [
-#    (r'^$',hello_world_app),
-#    (r'push_event$',event_analyst)
-#]
+urls = [
+    (r'^$',hello_world_app),
+    (r'push_event$',event_analyst)
+]
 
 
 def monitor(environ,start_response):
@@ -58,6 +77,6 @@ def monitor(environ,start_response):
 
 if __name__ == '__main__':
 
-    httpd = make_server('',8080,monitor)
-    print "Serving on port 8080"
+    httpd = make_server('',8082,Monitor(urls))
+    print "Serving on port 8082"
     httpd.serve_forever()
