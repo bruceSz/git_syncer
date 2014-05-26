@@ -6,9 +6,8 @@ CONF = None
 config_name="gsyncer.conf"
 possible_topdir = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]),
                                                 os.pardir,
-                                                os.pardir,
                                                 os.pardir))
-
+print possible_topdir
 if not os.path.exists(os.path.join(possible_topdir,"etc",config_name)):
     print >> stderr, "config file not found!!!"
     sys.exit(1)
@@ -44,7 +43,12 @@ def _do_init():
     for sc in scs:
         ops = cf.options(sc)
         for op in ops:
-            conf.__dict__[op] = cf.get(sc,op)
+            if op == 'repos':
+                repos = cf.get(sc,op)
+                repos = repos.split(',')
+                conf.__dict__[op]=repos
+            else:
+                conf.__dict__[op] = cf.get(sc,op)
 
     return conf
 

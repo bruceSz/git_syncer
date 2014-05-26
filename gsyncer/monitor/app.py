@@ -1,5 +1,9 @@
 import re
+import json
 #from wsgiref.simple_server import make_server
+import gsyncer.agent.manager as agent_manager
+import gsyncer.rpc.manager as rpc_manager
+from gsyncer.common.config import CONF
 
 class Monitor(object):
     def __init__(self,mapper):
@@ -43,7 +47,14 @@ class NotFound(object):
 
 class GitAgent(object):
     def __init__(self):
-        self.agent_manager = None
+        self._manager = self._get_manager('agent')
+
+    def _get_manager(self,module_name='agent'):
+        if module_name == 'agent':
+            return agent_manager.Manager(CONF)
+        else:
+            return rpc_manager.Manager(CONF)
+
 
     def __call__(self,environ,start_response):
 
@@ -61,19 +72,13 @@ class GitAgent(object):
 
             request_body = environ['wsgi.input'].read(request_body_size) 
             
-            print request_body
+            json_str = json.loads(request_body)
+            print json_str['repository']['name']
+
+            self._manager.sync(json_str['repository']['name'])
+
             return [str(request_body)]
 
-
-
-#def hello_world_app(environ,start_response):
-#    status = '200 OK'
-#    headers = [('Content-type','text/plain')]
-#    print environ
-#
-#    start_response(status,headers)
-#
-#    return ["hello world"]
 
 
 #def event_analyst(environ,start_response):

@@ -43,7 +43,7 @@ def ls(dir_name):
         print >>sys.stderr,"ls error !"
 
 
-if __name__ == '__main__':
-    gsyncer = Gsyncer('/fedora_home/brucesz/work/scripts-ccs','origin','development','origin','development')
-    gsyncer.sync()
-
+#if __name__ == '__main__':
+#    gsyncer = Gsyncer('/fedora_home/brucesz/work/scripts-ccs','origin','development','origin','development')
+#    gsyncer.sync()
+#
