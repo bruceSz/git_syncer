@@ -1,6 +1,8 @@
 import sys
 import os
 
+from wsgiref.simple_server import make_server
+
 #from  gsyncer.monitor import monitor
 
 possible_topdir = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]),
@@ -14,6 +16,9 @@ print possible_topdir
 print sys.path
 from gsyncer.monitor import app
 
+
 if __name__ == '__main__':
-    for item in dir(app):
-        print item
+    httpd = make_server('',8082,app.Monitor(app.urls))
+    print 'Serving on port 8082'
+    httpd.serve_forever()
+
